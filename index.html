@@ -45,7 +45,7 @@
         MP.api.people({where: propertyName}).done(function(results) {
           numPeople = Object.keys(results.values().results).length;
           if (numPeople = 1000){
-            numPeople = ">= 1000"
+            numPeople = "1000+"
           }
           $('.confirm-text')
             .html(
