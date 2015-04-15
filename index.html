@@ -32,21 +32,21 @@
     </div>
     <script>
     MP.api.ready(function() {
-      // set global variables for the company by which we will filter
+      //Set global variables
       var propertyName = '',
           numPeople = 0;
 
-      // record search term when company name is submitted and find # users who match search term
+      //Record selector for profiles
       $('#property').submit(function(e) {
         e.preventDefault();
         propertyName = $('#property input:first').val();
-        // query People profiles to find the number of users who match the search term
         
+        //Query People profiles
         MP.api.people({where: propertyName}).done(function(results) {
           numPeople = Object.keys(results.values().results).length;
-          if (numPeople == 1000){
-            numPeople = "1000+"
-          }
+          if (numPeople == 1000) {
+            numPeople = "1000+";
+          };
           $('.confirm-text')
             .html(
               "Property: <strong>" + propertyName + 
@@ -62,7 +62,6 @@
         });
       });
 
-      // get all event dropdown inputs and run segmentation queries segmented by "$email contains [search term]"
       function runQuery(results) {
         $('#file').submit(function(e) {
           var data = results;
@@ -70,72 +69,72 @@
             return;
           }
           fileName = $('#file input:first').val();
-          JSONToCSVConvertor(data, fileName, true);
+          JSONToCSVConvertor(data, fileName);
         });
       };
-        
       
-      /*function subProperty(subProperty, subPropertyData, CSV) {
-        debugger
-        _.each(_.keys(subPropertyData), function(info){
-          debugger
-          var data = subPropertyData[info]
-          debugger
-            var infoData = subProperties[info]
-              if (!subProperty(infoData, CSV)) {
-                CSV += '\r\n' + info + ',' + infoData + '\r\n';
-              } else{
-                subProperty(infoData, CSV)
-              }
-            });
-      };*/
+      //Creating dictionary for each property
+      function getSubKeys(listOfDicts) {
+        subkeys = {};
+        //For each profile
+        _.each(_.keys(listOfDicts), function(profileIndex){
+          var profilePropData = listOfDicts[profileIndex]['$properties'];
+          _.each(_.keys(profilePropData), function(property){
+            try {
+              subkeys[property] = true;
+            } catch (e) {}
+          });
+        });
+        return subkeys
+      }  
       
-      function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+      function JSONToCSVConvertor(JSONData, ReportTitle) {
         //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
         var data = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+        var CSV = ''
         
-        var CSV = '';    
-        //Set Report title in first row or line
-        CSV += ReportTitle + '\r\n\n';
-        
-        //This condition will generate the Label/Header
-        if (ShowLabel) {
-          var row = "";
-            
-          //This loop will extract the label from 1st index of on array
-          for (var index in data[0]) {
-            //Now convert each value to string and comma-seprated
-            row += index + ',';
-          }
-          row = row.slice(0, -1);
-          //append Label row with line break 
-          CSV += row + '\r\n';
-        }
-        
-        //1st loop is to extract each profile
+        //Create list of profiles
+        var event_list = [];
         _.each(_.keys(data), function(profileIndex){
           var profileData = data[profileIndex];
-          //Adds distinct_id value
-          try {
-            CSV += profileData['$distinct_id'] + '\r\n';
-          } catch(err) {
-            CSV += ""
-          }
-          
-          //Add each property & value
-          _.each(_.keys(profileData), function(property){
-            var propertyData = profileData[property]
-            _.each(_.keys(propertyData), function(info){
-              var infoData = propertyData[info]
-              CSV += ' ,' + info + ',' + infoData + '\r\n';
-            });
-          });
-          
-          if (CSV == '') {        
-            alert("Invalid data");
-            return;
-          }
+          event_list.push(profileData)
         });
+        
+        //Write the header with people properties
+        subkeys = getSubKeys(event_list)
+        var row = ''
+        row += '$distinct_id, '
+        _.each(_.keys(subkeys), function(property) {
+          row += property + ','
+        })
+        CSV += row + '\r\n';
+        
+        //Write the data
+        _.each(_.keys(event_list), function(eventIndex) {
+          var event = event_list[eventIndex]
+          var row = ''
+          try {
+            row += event['$distinct_id'] + ','
+          } catch (e) {
+            row += ','
+          }
+          _.each(_.keys(subkeys), function(property) {
+            data = event['$properties'][property]
+            if (!data) {
+              row += ','
+            } else if (_.isString(data)) {
+              row += data.replace(/,/g, "|") + ","
+            } else {
+              row += data + ","
+              console.log(data)
+            }
+            //if (data.indexOf(',') > -1) 
+          });
+          CSV += row + '\r\n';
+        })
+        
+        
+        
           
         //Generate a file name
         var fileName = ReportTitle.replace(/ /g,"_");   
