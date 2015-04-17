@@ -48,7 +48,7 @@
           return MP.api.people({where: propertyInput, page: pageNum})
         };
         
-        console.log(peopleExport(propertyName, pageIndex));
+        console.log(peopleExport(propertyName, pageIndex).values()["results"]);
         debugger
         
 
