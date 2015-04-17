@@ -46,7 +46,7 @@
         propertyName = $('#property input:first').val();
         
         while (nextPage) {
-          MP.api.people({where: propertyName, page: pageNum}).done(function(results) {
+          MP.api.people({where: propertyName, page: 0}).done(function(results) {
             pageNum ++
             debugger;
           })
