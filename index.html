@@ -37,7 +37,7 @@
           numPeople = 0,
           totalProfiles = 0,
           pageNum = 0,
-          has_results = true,
+          nextPage = true,
           output = {};
 
       //Record selector for profiles
@@ -45,10 +45,11 @@
         e.preventDefault();
         propertyName = $('#property input:first').val();
         
-        MP.api.people({where: propertyName, page: pageNum}).done(function(results) {
-          pageNum ++
-          debugger;
-        });
+        while (nextPage) {
+          MP.api.people({where: propertyName, page: pageNum}).done(function(results) {
+            pageNum ++
+            debugger;
+          });
         
         //Query People profiles
         /*while (has_results) {
