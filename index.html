@@ -46,7 +46,7 @@
         
         function peopleExport(propertyInput, pageNum) {
           MP.api.people({where: propertyInput, page: pageNum}).done(function(results) {
-            console.log(results.values()["results"]);
+            return results.values()["results"];
           });
         };
         
