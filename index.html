@@ -42,7 +42,7 @@
         propertyName = $('#property input:first').val();
         
         //Query People profiles
-        MP.api.people({where: propertyName}).done(function(results) {
+        MP.api.people({where: propertyName, page: 0}).done(function(results) {
           numPeople = Object.keys(results.values().results).length;
           if (numPeople == 1000) {
             numPeople = "1000+";
