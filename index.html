@@ -34,55 +34,32 @@
     MP.api.ready(function() {
       //Set global variables
       var propertyName = '',
-          numPeople = 0,
-          totalProfiles = 0,
-          pageNum = 0,
-          output = {};
-
+          numPeople = 0;
       //Record selector for profiles
       $('#property').submit(function(e) {
         e.preventDefault();
         propertyName = $('#property input:first').val();
-         
-        var nextPage = true,
-        
-        while (i < 10) {
-        MP.api.people({where: propertyName, page: i}).done(function(results) {
-            i ++
-            nextPage = false
-            debugger;
-          })
-        };
         
         //Query People profiles
-        /*while (has_results) {
-          debugger
-          MP.api.people({where: propertyName, page: 0}).done(function(results) {
-            numPeople = Object.keys(results.values().results).length;
-            debugger
-            if (numPeople == 1000) {
-              pageNum ++;
-              debugger
-              output = $.concat(output, results.values()["results"])
-            } else {
-              has_results == false
-              totalProfiles = (pageNum+1)*1000 + numPeople
-            }
-            }).fail(function() {
-            $('.confirm-text')
-              .html("Error: Please enter a valid property selector.")
-              .css("color", "red");
-            });
-        };
-        $('.confirm-text')
-        .html(
-          "Property: <strong>" + propertyName + 
-          "</strong><br># People profiles that match: <strong>" + totalProfiles + "</strong>")
-        .css("color", "rgb(95,105,131)");
-        console.log(output)
-      runQuery(output);*/
+        MP.api.people({where: propertyName}).done(function(results) {
+          numPeople = Object.keys(results.values().results).length;
+          if (numPeople == 1000) {
+            numPeople = "1000+";
+          };
+          $('.confirm-text')
+            .html(
+              "Property: <strong>" + propertyName + 
+              "</strong><br># People profiles that match: <strong>" + numPeople + "</strong>")
+            .css("color", "rgb(95,105,131)");
+            console.log(results.values()["results"])
+          runQuery(results.values()["results"]);
+        }).fail(function() {
+          $('.confirm-text')
+            .html("Error: Please enter a valid property selector.")
+            .css("color", "red");
+          runQuery();
+        });
       });
-      
       function runQuery(results) {
         $('#file').submit(function(e) {
           var data = results;
@@ -187,7 +164,6 @@
       
       // set functions to run when dropdowns change
       
-
     </script>
   </body>
 </html>
