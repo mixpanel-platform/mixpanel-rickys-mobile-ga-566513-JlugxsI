@@ -34,7 +34,8 @@
     MP.api.ready(function() {
       //Set global variables
       var propertyName = '',
-          numPeople = 0;
+          numPeople = 0,
+          pageIndex = 0;
 
       //Record selector for profiles
       $('#property').submit(function(e) {
@@ -42,7 +43,15 @@
         propertyName = $('#property input:first').val();
         
         //Query People profiles
-        MP.api.people({where: propertyName, page: 1}).done(function(results) {
+        
+        function peopleExport(propertyInput, pageNum) {
+          return MP.api.people({where: propertyInput, page: pageNum})
+        }
+        
+        console.log(peopleExport(propertyName, pageIndex));
+        
+
+          /*MP.api.people({where: propertyName, page: pageNum}).done(function(results) {
           numPeople = Object.keys(results.values().results).length;
           if (numPeople == 1000) {
             numPeople = "1000+";
@@ -58,9 +67,10 @@
           $('.confirm-text')
             .html("Error: Please enter a valid property selector.")
             .css("color", "red");
-          runQuery();
         });
-      });
+      });*/
+      
+      
 
       function runQuery(results) {
         $('#file').submit(function(e) {
