@@ -45,7 +45,7 @@
         //Query People profiles
         
         function peopleExport(propertyInput, pageNum) {
-          return MP.api.people({where: propertyInput, page: pageNum}).values()["results"]
+          return MP.api.people({where: propertyInput, page: pageNum}).values()
         };
         
         console.log((peopleExport(propertyName, pageIndex)));
