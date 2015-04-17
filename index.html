@@ -35,7 +35,10 @@
       //Set global variables
       var propertyName = '',
           numPeople = 0,
-          pageIndex = 0;
+          totalProfiles = 0,
+          pageNum = 0,
+          has_results = true,
+          output = {};
 
       //Record selector for profiles
       $('#property').submit(function(e) {
@@ -43,38 +46,32 @@
         propertyName = $('#property input:first').val();
         
         //Query People profiles
-        
-        function peopleExport(propertyInput, pageNum) {
-          MP.api.people({where: propertyInput, page: pageNum}).done(function(results) {
-            return results.values()["results"];
-          });
-        };
-        
-        console.log((peopleExport(propertyName, pageIndex)));
-        debugger
-        
-
-          /*MP.api.people({where: propertyName, page: pageNum}).done(function(results) {
-          numPeople = Object.keys(results.values().results).length;
+        while (has_results) {
+          MP.api.people({where: propertyName, page: pageNum}).done(function(results) {
+            numPeople = Object.keys(results.values().results).length;
           if (numPeople == 1000) {
-            numPeople = "1000+";
-          };
-          $('.confirm-text')
-            .html(
-              "Property: <strong>" + propertyName + 
-              "</strong><br># People profiles that match: <strong>" + numPeople + "</strong>")
-            .css("color", "rgb(95,105,131)");
-            console.log(results.values()["results"])
-          runQuery(results.values()["results"]);
-        }).fail(function() {
+            pageNum ++;
+            output = $.concat(output, results.values()["results"])
+          } else {
+            has_results == false
+            totalProfiles = (pageNum+1)*1000 + numPeople
+          }
+          }).fail(function() {
           $('.confirm-text')
             .html("Error: Please enter a valid property selector.")
             .css("color", "red");
-        });*/
+          });
+        };
+        
+        $('.confirm-text')
+          .html(
+            "Property: <strong>" + propertyName + 
+            "</strong><br># People profiles that match: <strong>" + totalProfiles + "</strong>")
+          .css("color", "rgb(95,105,131)");
+          console.log(output)
+        runQuery(output);
       });
       
-      
-
       function runQuery(results) {
         $('#file').submit(function(e) {
           var data = results;
