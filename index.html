@@ -48,6 +48,7 @@
         while (nextPage) {
           MP.api.people({where: propertyName, page: 0}).done(function(results) {
             pageNum ++
+            nextPage = false
             debugger;
           })
         };
