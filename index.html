@@ -37,18 +37,18 @@
           numPeople = 0,
           totalProfiles = 0,
           pageNum = 0,
-          nextPage = true,
           output = {};
 
       //Record selector for profiles
       $('#property').submit(function(e) {
         e.preventDefault();
         propertyName = $('#property input:first').val();
+         
+        var nextPage = true,
         
-        
-        while (nextPage == true) {
-        MP.api.people({where: propertyName, page: 0}).done(function(results) {
-            pageNum ++
+        while (i < 10) {
+        MP.api.people({where: propertyName, page: i}).done(function(results) {
+            i ++
             nextPage = false
             debugger;
           })
