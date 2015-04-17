@@ -45,13 +45,13 @@
         e.preventDefault();
         propertyName = $('#property input:first').val();
         
-        while (nextPage == true) {
+        //while (nextPage == true) {
           MP.api.people({where: propertyName, page: 0}).done(function(results) {
             pageNum ++
             nextPage = false
             debugger;
           })
-        };
+        //};
         
         //Query People profiles
         /*while (has_results) {
