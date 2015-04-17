@@ -47,6 +47,7 @@
         
         //Query People profiles
         while (has_results) {
+          debugger
           MP.api.people({where: propertyName, page: pageNum}).done(function(results) {
             numPeople = Object.keys(results.values().results).length;
             debugger
@@ -63,15 +64,14 @@
               .html("Error: Please enter a valid property selector.")
               .css("color", "red");
             });
-          };
-        
+        };
         $('.confirm-text')
-          .html(
-            "Property: <strong>" + propertyName + 
-            "</strong><br># People profiles that match: <strong>" + totalProfiles + "</strong>")
-          .css("color", "rgb(95,105,131)");
-          console.log(output)
-        runQuery(output);
+        .html(
+          "Property: <strong>" + propertyName + 
+          "</strong><br># People profiles that match: <strong>" + totalProfiles + "</strong>")
+        .css("color", "rgb(95,105,131)");
+        console.log(output)
+      runQuery(output);
       });
       
       function runQuery(results) {
