@@ -45,7 +45,7 @@
         e.preventDefault();
         propertyName = $('#property input:first').val();
         
-        while (nextPage) {
+        while (nextPage == true) {
           MP.api.people({where: propertyName, page: 0}).done(function(results) {
             pageNum ++
             nextPage = false
